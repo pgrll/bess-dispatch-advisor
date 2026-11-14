@@ -93,14 +93,42 @@ def brute_force_best_value(prices: np.ndarray, battery: BatteryConfig) -> float:
     return best
 
 
+def pairwise_upper_bound(prices: np.ndarray, battery: BatteryConfig) -> float:
+    """Value no schedule can exceed, computed without any solver.
+
+    Every MWh sold was bought earlier at a cost of ``buy / efficiency`` plus
+    wear, so it earns at most the best pairwise net spread. At most
+    ``cycles x capacity x discharge efficiency`` MWh can be sold in a day
+    (battery starting empty). Written independently of ``economics.py`` on
+    purpose: a shared mistake would hide in both.
+    """
+    best_spread = max(
+        prices[j] - prices[i] / battery.round_trip_efficiency - battery.degradation_cost_eur_per_mwh
+        for i in range(len(prices))
+        for j in range(i + 1, len(prices))
+    )
+    max_sold = battery.max_cycles_per_day * battery.energy_mwh * battery.discharge_efficiency
+    return max(0.0, best_spread) * max_sold
+
+
 @pytest.mark.parametrize("seed", range(5))
-def test_optimiser_never_beaten_by_brute_force(seed):
-    """An independent oracle: exhaustive search over 3^8 simple schedules."""
+def test_optimiser_sits_between_two_independent_bounds(seed):
+    """Lower bound: exhaustive search over 3^8 full-power schedules (the optimiser
+    must do at least as well). Upper bound: the pairwise spread argument (it
+    cannot do better). Neither bound uses the optimiser's code."""
     battery = BatteryConfig(energy_mwh=50.0, max_cycles_per_day=1.0)
     prices = np.round(np.random.default_rng(seed).normal(60, 40, 8), 2)
     index = pd.date_range("2026-11-14", periods=8, freq="15min", tz="Europe/Paris")
-    schedule = optimise_day(pd.Series(prices, index=index), battery)
-    assert schedule.net_value_eur >= brute_force_best_value(prices, battery) - 1e-4
+    value = optimise_day(pd.Series(prices, index=index), battery).net_value_eur
+    assert brute_force_best_value(prices, battery) - 1e-4 <= value <= pairwise_upper_bound(prices, battery) + 1e-4
+
+
+@pytest.mark.parametrize("seed", range(10))
+def test_full_day_value_never_exceeds_the_upper_bound(seed):
+    battery = BatteryConfig()
+    day = random_day(seed)
+    value = optimise_day(day, battery).net_value_eur
+    assert 0.0 <= value <= pairwise_upper_bound(day.to_numpy(), battery) + 1e-4
 
 
 def test_negative_prices_do_not_trigger_simultaneous_charge_and_discharge():
