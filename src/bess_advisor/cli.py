@@ -44,14 +44,17 @@ def format_report(prices: pd.Series, ranked: list[ScenarioResult], source: str) 
         f"(buy {_format_interval(check.buy_interval)}, sell {_format_interval(check.sell_interval)})",
         "",
         "Scenarios, ranked by net value captured (EUR)",
-        f"  {'#':<3}{'scenario':<16}{'net value':>11}{'arbitrage':>11}{'wear':>9}{'reserve':>9}{'cycles':>8}",
+        f"  {'#':<3}{'scenario':<16}{'net value':>11}{'arbitrage':>11}{'wear':>9}{'reserve':>9}"
+        f"{'cycles':>8}{'per cycle':>11}",
     ]
     for rank, result in enumerate(ranked, start=1):
         s = result.schedule
+        per_cycle = "-" if s.value_per_cycle_eur is None else f"{s.value_per_cycle_eur:,.0f}"
         lines.append(
             f"  {rank:<3}{result.name:<16}{s.net_value_eur:>11,.0f}{s.arbitrage_revenue_eur:>11,.0f}"
-            f"{-s.degradation_cost_eur:>9,.0f}{s.reserve_revenue_eur:>9,.0f}{s.cycles:>8.2f}"
+            f"{-s.degradation_cost_eur:>9,.0f}{s.reserve_revenue_eur:>9,.0f}{s.cycles:>8.2f}{per_cycle:>11}"
         )
+    lines.append("  'per cycle' = arbitrage value net of wear, per full cycle (reserve income excluded).")
 
     top = ranked[0]
     lines += ["", f"Intervals of scenario #1 ({top.name}: {top.description})"]

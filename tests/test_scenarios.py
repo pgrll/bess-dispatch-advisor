@@ -58,3 +58,9 @@ def test_scenarios_derive_from_the_base_battery():
     base = BatteryConfig(round_trip_efficiency=0.9)
     for result in run_scenarios(DAYS["random_1"], base=base):
         assert result.schedule.battery.round_trip_efficiency == 0.9
+
+
+def test_preserve_earns_at_least_as_much_per_cycle_on_a_two_peak_day():
+    """The case for 'preserve': fewer cycles, but each one is worth more."""
+    values = {r.name: r.schedule for r in run_scenarios(DAYS["random_0"])}
+    assert values["preserve"].value_per_cycle_eur >= values["max_arbitrage"].value_per_cycle_eur - 0.01
