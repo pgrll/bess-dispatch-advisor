@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bess-dispatch-advisor"
+version = "0.1.0"
+description = "Day-ahead dispatch advisor for a 100 MW / 200 MWh battery on the French electricity market."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Paul Grall" }]
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "scipy>=1.11",  # scipy.optimize.milp ships the HiGHS MILP solver
+]
+
+[project.optional-dependencies]
+dashboard = ["plotly>=5.20", "streamlit>=1.35"]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[project.scripts]
+bess-advisor = "bess_advisor.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["src", "."]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "N", "SIM"]
