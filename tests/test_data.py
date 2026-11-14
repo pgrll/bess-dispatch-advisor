@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from bess_advisor.data.entsoe import EntsoeError, build_request_params, parse_day_ahead_xml
+from bess_advisor.data.entsoe import EntsoeError, build_request_params, explain_http_error, parse_day_ahead_xml
 from bess_advisor.data.storage import load_prices_csv, save_prices_csv
 from bess_advisor.data.validation import PriceDataError, expected_intervals, validate_day_prices
 from tests.conftest import make_day
@@ -111,3 +111,16 @@ def test_csv_round_trip_on_a_clock_change_day(tmp_path):
     reloaded = validate_day_prices(load_prices_csv(path))
     assert reloaded.tolist() == prices.tolist()
     assert (reloaded.index == prices.index).all()
+
+
+@pytest.mark.parametrize(
+    ("status", "expected"),
+    [(401, "token"), (429, "Wait a minute"), (503, "unavailable"), (400, "refused")],
+)
+def test_http_errors_say_what_to_do(status, expected):
+    assert expected in explain_http_error(status, "")
+
+
+def test_http_error_with_acknowledgement_keeps_the_platform_reason():
+    body = (FIXTURES / "entsoe_ack_no_data.xml").read_text()
+    assert "No matching data" in explain_http_error(400, body)
