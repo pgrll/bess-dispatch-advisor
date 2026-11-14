@@ -43,18 +43,29 @@ A mixed-integer linear programme per scenario, solved by HiGHS through
 
 ## Choices challenged during design
 
-The first proposal (AI-generated, augmentation mode) was reviewed against the
-constraints. What changed:
+Who raised what is stated plainly, because both the author and the AI
+assistant proposed things that did not survive review:
 
-- **Solver library**: PuLP was proposed; replaced by SciPy's `milp`, which
-  ships the same HiGHS solver with no extra dependency.
-- **LP vs MILP**: the textbook formulation is a plain LP. It can charge and
+- **Solver library** (raised by the assistant): the brief named PuLP; SciPy's
+  `milp` ships the same HiGHS solver with no extra dependency.
+- **LP vs MILP** (assistant): the textbook formulation is a plain LP. It can charge and
   discharge at the same time on negative-price days, burning energy in losses
   to get paid. A binary variable per interval forbids it.
-- **Ranking on revenue** would always put the most aggressive scenario first.
+- **Ranking on revenue** (assistant) would always put the most aggressive scenario first.
   Ranking is on net value (wear and reserve revenue included).
-- **Scope**: the first framing implied the tool helps place the day-ahead bid.
+- **15-minute intervals, never hour ranges** (author): a first draft of the
+  agent spec summarised the schedule as ranges like "charge 13:00-15:00";
+  the analyst needs the exact intervals.
+- **Three scenarios on one chart, curtailment, the main test** (author).
+- **Scope** (assistant): the first framing implied the tool helps place the day-ahead bid.
   It cannot without a forecast (see the problem brief); the scope was narrowed.
+
+## Not verified yet
+
+The ENTSO-E download has not been run against the live API from the build
+environment (no network access there). The parser is tested on a fixture
+written to the documented A44 structure; the first real run is the check
+(see `07_author_review.md`).
 
 ## Next components (not built yet)
 

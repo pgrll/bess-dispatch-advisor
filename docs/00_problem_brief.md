@@ -21,9 +21,10 @@ and to justify the choice to the desk in one sentence**.
 
 ## A timing fact that shapes the scope
 
-The day-ahead auction (SDAC) closes at 12:00 CET the day before delivery,
-and prices are published around 13:00. **The bid is placed before prices are
-known.** A tool built on published prices therefore supports:
+The day-ahead auction (SDAC) closes at 12:00 CET the day before delivery;
+preliminary results come out at 12:45 and final results at 12:57
+([BSP SouthPool, day-ahead market](https://bsp-southpool.com/day-ahead-market)).
+**The bid is placed before prices are known.** A tool built on published prices therefore supports:
 
 1. the physical dispatch plan and intraday adjustments once results are out;
 2. after-the-fact analysis: how much value a strategy left on the table.

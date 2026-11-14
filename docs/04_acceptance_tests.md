@@ -16,7 +16,7 @@ the test that checks it. Run them all with `pytest`.
 |---|---|---|
 | A3 | No schedule ever exceeds power, capacity or cycle limits, or charges and discharges at once | `test_optimizer.py::test_schedule_respects_every_physical_limit` (30 cases) |
 | A4 | On a day computable by hand, the value is exact to the cent (15,300 EUR) | `test_optimizer.py::test_hand_computed_day` |
-| A5 | No simple schedule found by exhaustive search beats the optimiser | `test_optimizer.py::test_optimiser_never_beaten_by_brute_force` |
+| A5 | The optimiser's value sits between two bounds that do not use its code: exhaustive search (lower) and the pairwise spread argument (upper) | `test_optimizer.py::test_optimiser_sits_between_two_independent_bounds`, `test_full_day_value_never_exceeds_the_upper_bound` |
 | A6 | The "worth cycling?" verdict always agrees with the optimiser | `test_economics.py::test_verdict_agrees_with_the_optimiser` |
 | A7 | Day-ahead prices are parsed exactly, including omitted repeated values | `test_data.py::test_parser_keeps_15_minute_series_and_forward_fills_a03` |
 | A8 | Intervals are reported one by one at 15-minute resolution, with the data source and a non-directive closing line | `test_cli.py::test_report_on_the_sample_day` |
@@ -33,6 +33,7 @@ the test that checks it. Run them all with `pytest`.
 | E6 | Flat prices, or zero all day | Battery idle, value 0 | `test_flat_prices_leave_the_battery_idle`, `test_zero_prices_all_day_leave_the_battery_idle` |
 | E7 | Deeply negative prices | No simultaneous charge and discharge | `test_negative_prices_do_not_trigger_simultaneous_charge_and_discharge` |
 | E8 | Spread smaller than losses plus wear | "Not worth cycling" | `test_small_spread_is_eaten_by_losses_and_wear` |
+| E9 | ENTSO-E unreachable, token rejected, rate limit | A sentence saying what to do next | `test_http_errors_say_what_to_do` |
 
 ## Not automated yet
 

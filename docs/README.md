@@ -13,6 +13,8 @@ document answers one question; read them in order.
 | 5. Definition of done | [04_acceptance_tests.md](04_acceptance_tests.md) | Which automated test proves each requirement |
 | 6. Decisions | [05_decision_log.md](05_decision_log.md) | Why each choice was made, and every assumption to recalibrate |
 | 7. Build | [06_build_prompt.md](06_build_prompt.md) | The instructions used to turn the spec into code with an AI assistant |
+| 8. Ownership | [07_author_review.md](07_author_review.md) | What the author checked personally before signing the work |
 
-The code was written with an AI assistant (Claude) and reviewed line by line.
-The split of responsibilities is explicit in the delegation plan.
+The code was written with an AI assistant (Claude), from requirements and
+corrections set by the author. The split of responsibilities is explicit in
+the delegation plan; the author's own review is tracked in step 8.
