@@ -28,6 +28,20 @@ Intervals of scenario #1 (reserve: 20 MW held for balancing services, up to 2 cy
   ...
 ```
 
+## The dashboard
+
+```bash
+bess-advisor --prices data/sample/synthetic_day.csv --html dashboard.html
+```
+
+One self-contained HTML page, in French, written for analysts **and** for
+teams outside the market: the suggestion and its value first, then the day's
+prices with each charge (▲) and discharge (▼) interval, a comparison of the
+three scenarios, and every interval in a table. An example is in
+[`examples/dashboard_synthetic_day.html`](examples/dashboard_synthetic_day.html)
+(download it and open it in a browser). Design criteria and their tests are in
+[`docs/03_technical_spec.md`](docs/03_technical_spec.md#dashboard).
+
 ## Why it is built this way
 
 The project follows the steps of a Forward Deployed Engineer engagement:
@@ -55,7 +69,7 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 
 bess-advisor --prices data/sample/synthetic_day.csv   # offline demo
-pytest                                                 # 97 tests, a few seconds
+pytest                                                 # 154 tests, a few seconds
 ```
 
 With real data, get a free API token from the
@@ -96,14 +110,16 @@ src/bess_advisor/
   optimizer.py       MILP schedule (formulation in the module docstring)
   economics.py       "is it worth cycling?" check
   scenarios.py       three strategies and the ranking rule
-  cli.py             text report
+  cli.py             text report, or the dashboard with --html
+  dashboard/         HTML dashboard (text, view, charts, page, errors)
   data/
     entsoe.py        ENTSO-E download and XML parsing
     validation.py    rejects incomplete or malformed price days
     storage.py       local CSV cache
-tests/               97 tests, with ENTSO-E XML fixtures
+tests/               154 tests, with ENTSO-E XML fixtures
 docs/                problem brief, delegation plan, spec, decisions
 scripts/             synthetic sample generator
+examples/            dashboard generated on the synthetic day
 ```
 
 ## Assumptions and limits
@@ -118,7 +134,7 @@ price forecast.
 ## Roadmap
 
 - [x] Data pipeline, optimiser, scenarios, CLI report, test suite
-- [ ] Dashboard: price curve with each scenario's charge and discharge points
+- [x] Dashboard: price curve with each scenario's charge and discharge points
 - [ ] Market context from RTE eCO2mix (consumption, generation mix)
 - [ ] LLM agent explaining schedules, with an evaluation suite and a cost/latency table
 - [ ] Same agent on an open-weight model (Mistral), compared on the same evaluations

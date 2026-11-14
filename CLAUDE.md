@@ -14,6 +14,7 @@ market. The source of truth for scope and behaviour is `docs/`, in particular
 - Tests: `pytest`
 - Lint and format: `ruff check . && ruff format .`
 - Demo: `bess-advisor --prices data/sample/synthetic_day.csv`
+- Dashboard: `bess-advisor --prices data/sample/synthetic_day.csv --html examples/dashboard_synthetic_day.html`
 
 ## Rules
 
@@ -26,5 +27,7 @@ market. The source of truth for scope and behaviour is `docs/`, in particular
   `docs/05_decision_log.md`.
 - Every requirement change updates `docs/04_acceptance_tests.md` and its test.
 - Output phrases suggestions, never orders.
+- Dashboard wording lives in `dashboard/text.py`; keep it plain French with units, and keep
+  `tests/test_dashboard.py` (contrast, text size, no colour-only meaning) passing.
 - Code in English, typed, with docstrings that explain why.
 - One pull request per step; the author reviews every line before merging.

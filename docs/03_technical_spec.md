@@ -67,10 +67,31 @@ environment (no network access there). The parser is tested on a fixture
 written to the documented A44 structure; the first real run is the check
 (see `07_author_review.md`).
 
+## Dashboard
+
+`bess-advisor --prices <file> --html dashboard.html` writes one
+self-contained HTML page (no dependency, works offline, prints, can be
+published as a static page). Modules in `src/bess_advisor/dashboard/`:
+
+| Module | Responsibility |
+|---|---|
+| `text.py` | Every word shown, French number and date formats, glossary |
+| `view.py` | What the page shows, computed from the scenarios, free of HTML |
+| `charts.py` | Inline SVG charts: price with charge/discharge marks, stored energy, timeline per scenario |
+| `page.py` | Page layout, styles (light and dark), small script for the scenario switch and tooltip |
+| `errors.py` | Failures turned into: what happened, what to do, where to get help |
+
+Reader criteria and how the page meets them:
+
+| Criterion | How |
+|---|---|
+| Clarity | Section titles are the reader's questions; scenario names in plain words; glossary for each term; units on every number |
+| Hierarchy | One hero figure (suggestion n°1's value), then the day, the comparison, the detail table, the help |
+| Accessibility | Text ≥ 13 px and WCAG AA contrast (tested); charge/discharge shown by shape (▲/▼), position and words, never colour alone; charts have text descriptions and a table with every value; colour-blind-safe palette (validated); keyboard focus visible; dark mode |
+| Feedback | Synthetic data flagged; a caveat when suggestion n°1 rests on an unconfirmed assumption; failures produce an explained page, never a raw error |
+
 ## Next components (not built yet)
 
-- **Dashboard** (Streamlit + Plotly): price curve at 15-min resolution with
-  each scenario's charge (▲) and discharge (▼) points, one colour per scenario.
 - **Agent** (phase 2): tools `get_schedule`, `get_prices`, `run_scenario`,
   `check_cycle_value` wrapping the functions above; evaluated on completion,
   trajectory, tool correctness, cost and latency.

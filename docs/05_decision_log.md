@@ -14,6 +14,8 @@ what would make us revisit it.
 | D7 | Version 1 works on published prices only | Bids close at 12:00, results come at 12:45-12:57 ([BSP SouthPool](https://bsp-southpool.com/day-ahead-market)); a forecast is a separate project | Phase 3: price forecasting |
 | D8 | Repository written in English | Readable by any reviewer | — |
 | D9 | Show value per cycle next to total value | Total value can never favour `preserve` (see below); value per cycle shows what it buys | The cycle budget gets an explicit price |
+| D10 | Dashboard as one self-contained HTML file with inline SVG, instead of Streamlit + Plotly | No new dependency, opens offline, can be e-mailed or published, fully testable | Readers need live data or server-side interaction |
+| D11 | Dashboard text in French, code in English | Readers are French market and non-market teams; all wording sits in `dashboard/text.py` for translation | An English-speaking audience |
 
 ## Known limitation, stated plainly
 

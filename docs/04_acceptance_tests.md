@@ -35,6 +35,19 @@ the test that checks it. Run them all with `pytest`.
 | E8 | Spread smaller than losses plus wear | "Not worth cycling" | `test_small_spread_is_eaten_by_losses_and_wear` |
 | E9 | ENTSO-E unreachable, token rejected, rate limit | A sentence saying what to do next | `test_http_errors_say_what_to_do` |
 
+## Dashboard
+
+| # | Statement | Test (`test_dashboard.py`) |
+|---|---|---|
+| D1 | The hero shows the scenario capturing the most value, once, before everything else | `test_hero_shows_the_scenario_that_captures_the_most_value`, `test_sections_come_in_order_of_importance` |
+| D2 | Every chart has a title and a text description | `test_every_chart_has_a_title_and_a_text_description` |
+| D3 | All text meets WCAG AA contrast in light and dark mode; chart marks reach 3:1 | `test_text_meets_wcag_aa_contrast`, `test_chart_marks_meet_graphical_contrast` |
+| D4 | No text below 13 px | `test_no_text_smaller_than_13_pixels` |
+| D5 | Charge and discharge never rely on colour alone | `test_charge_and_discharge_never_rely_on_colour_alone` |
+| D6 | Synthetic data is flagged; a ranking resting on an unconfirmed assumption is flagged | `test_synthetic_data_is_flagged_and_real_data_is_not`, `test_hero_warns_when_the_ranking_rests_on_an_unconfirmed_assumption` |
+| D7 | Every failure produces a page saying what happened, what to do and where to get help | `test_error_page_says_what_happened_what_to_do_and_where_to_get_help` |
+| D8 | Suggestions are never phrased as orders | `test_suggestions_are_never_phrased_as_orders` |
+
 ## Not automated yet
 
 - Readability: an analyst states scenario #1's value and first discharge
