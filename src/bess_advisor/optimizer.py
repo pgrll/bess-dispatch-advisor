@@ -98,6 +98,17 @@ class Schedule:
         """Value captured over the day: the quantity used to rank scenarios."""
         return self.arbitrage_revenue_eur - self.degradation_cost_eur + self.reserve_revenue_eur
 
+    @property
+    def value_per_cycle_eur(self) -> float | None:
+        """Arbitrage value net of wear, per full cycle; None when idle.
+
+        This is where a cautious strategy can win: it often earns more per
+        cycle, which matters when the yearly cycle budget is the constraint.
+        """
+        if self.cycles < 1e-9:
+            return None
+        return (self.arbitrage_revenue_eur - self.degradation_cost_eur) / self.cycles
+
     def active_intervals(self) -> pd.DataFrame:
         """Only the intervals where the battery charges or discharges."""
         return self.intervals[self.intervals["action"] != "idle"]

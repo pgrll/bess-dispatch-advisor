@@ -19,6 +19,7 @@ API documentation: https://transparency.entsoe.eu/content/static_content/Static%
 from __future__ import annotations
 
 import os
+import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -132,8 +133,32 @@ def fetch_day_ahead_prices(delivery_day: date, token: str | None = None, timeout
     """
     token = token or os.environ.get(TOKEN_ENV_VAR)
     if not token:
-        raise EntsoeError(f"No API token: set the {TOKEN_ENV_VAR} environment variable.")
+        raise EntsoeError(f"No API token: set the {TOKEN_ENV_VAR} environment variable (see README).")
     url = f"{API_URL}?{urllib.parse.urlencode(build_request_params(delivery_day, token))}"
-    with urllib.request.urlopen(url, timeout=timeout_s) as response:  # noqa: S310 (fixed https URL)
-        xml_text = response.read().decode("utf-8")
+    try:
+        with urllib.request.urlopen(url, timeout=timeout_s) as response:  # noqa: S310 (fixed https URL)
+            xml_text = response.read().decode("utf-8")
+    except urllib.error.HTTPError as error:
+        body = error.read().decode("utf-8", errors="replace")
+        raise EntsoeError(explain_http_error(error.code, body)) from error
+    except (urllib.error.URLError, TimeoutError) as error:
+        raise EntsoeError(
+            "Could not reach the ENTSO-E platform. Check your internet connection, then try again."
+        ) from error
     return validate_day_prices(parse_day_ahead_xml(xml_text), delivery_day)
+
+
+def explain_http_error(status: int, body: str) -> str:
+    """Turn an HTTP failure into a sentence that says what to do next."""
+    if "Acknowledgement_MarketDocument" in body:
+        try:
+            parse_day_ahead_xml(body)
+        except EntsoeError as error:
+            return str(error)
+    if status == 401:
+        return f"ENTSO-E rejected the API token (HTTP 401). Check the value of {TOKEN_ENV_VAR}."
+    if status == 429:
+        return "Too many requests to ENTSO-E (HTTP 429). Wait a minute, then try again."
+    if status >= 500:
+        return f"The ENTSO-E platform is unavailable (HTTP {status}). Try again later."
+    return f"ENTSO-E refused the request (HTTP {status})."

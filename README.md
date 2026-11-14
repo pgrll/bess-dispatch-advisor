@@ -40,7 +40,7 @@ Three design choices matter most:
 1. **The schedule is computed by an optimiser, not by an LLM.** It is exact,
    reproducible and free. A language model will come in phase 2 to *explain*
    schedules and answer questions, using these functions as tools.
-2. **15-minute resolution end to end**, the market's time unit since 2025,
+2. **15-minute resolution end to end**, the market's time unit since 1 October 2025,
    including clock-change days (92 and 100 intervals).
 3. **Bad data is rejected, never guessed.** A missing interval stops the run
    with an explicit message rather than producing a wrong schedule.
@@ -75,8 +75,9 @@ check the optimiser against independent references, not against itself:
 
 - **A day computed by hand**: buy 8 intervals at 0, sell at 100; the expected
   value (15,300 EUR) is derived on paper in the test's docstring.
-- **Exhaustive search**: on short horizons, no schedule found by brute force
-  beats the optimiser.
+- **Two independent bounds**: on short horizons, exhaustive search gives a
+  value the optimiser must reach, and a pen-and-paper spread argument gives
+  one it can never exceed. Neither uses the optimiser's code.
 - **Physics on every schedule**: power, capacity and cycle limits, no
   simultaneous charge and discharge, state of charge recomputed from powers.
 - **Agreement with a one-line formula**: the "worth cycling?" verdict and the
